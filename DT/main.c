@@ -8,13 +8,13 @@
 #include <map>
 
 //---- Core
-#include "../../Common/src/Options.h"
+#include "../Common/src/Options.h"
 
 //---- DT classes
 #include "src/RawAnalyzer.h"
 #include "src/ReaderROS8.h"
 #include "src/ReaderROS8_CUT.h"
-#include "../../Common/src/EventBuilder.h"
+#include "../Common/src/EventBuilder.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RECIPE PARAMETERS //

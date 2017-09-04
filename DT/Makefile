@@ -21,12 +21,12 @@ CXXFLAGS += -O0
 # include root
 CXXFLAGS += -I$(ROOTSYS)/include
 # libs
-LIBS           = $(ROOTLIBS) -L$(BOOSTLIBS) -lboost_program_options -lgcc -lm -ldl -rdynamic
+LIBS           = $(ROOTLIBS) -L$(BOOSTLIBS) -lboost_program_options  -lm -ldl -rdynamic
 GLIBS        = $(ROOTGLIBS)
 
 # files
-TOP := $(realpath ../../)
-CPP_FILES :=  $(wildcard $(TOP)/DT/OriginalPattRec/src/*.cpp)
+TOP := $(realpath ../)
+CPP_FILES :=  $(wildcard $(TOP)/DT/src/*.cpp)
 CPP_FILES +=  $(wildcard $(TOP)/Common/src/*.cpp)
 OBJ_FILES := $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=.o)))
 
@@ -36,10 +36,10 @@ all: runPR
 runPR: $(OBJ_FILES) main.o
 	${CXX}  -o runPR ${CXXFLAGS} main.o $(OBJ_FILES) $(LIBS) $(GLIBS)
 
-obj/%.o: $(TOP)/*/*/src/%.cpp
+obj/%.o: $(TOP)/*/src/%.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $<
 
-obj/%.o: $(TOP)/*/src/%.cpp
+obj/%.o: $(TOP)/src/%.cpp
 	${CXX} ${CXXFLAGS} -c -o $@ $<
 
 main.o:
