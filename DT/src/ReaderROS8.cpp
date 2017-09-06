@@ -71,7 +71,7 @@ ReaderROS8::~ReaderROS8() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ReaderROS8::goAnalysis(TString fin, int maxEvent, int runN, int runTrig, bool ttrig, bool n2chambers, int chside) {
+void ReaderROS8::goUnpack(TString fin, int maxEvent, int runN, int runTrig, bool ttrig, bool n2chambers, int chside) {
     
     /// NB chside=-1 reconstruct only negative side of phi orizontal coordinate, chside=1 only positive, chside=0 all chamber
     m_chside = chside;
@@ -153,12 +153,13 @@ void ReaderROS8::goAnalysis(TString fin, int maxEvent, int runN, int runTrig, bo
             // unpack event
             int daqEvNum = readEvent(rawfile,hits);
 
-             // track reconstruction
-            Track *track = new Track();
-            bool n2chambers=0;
-            track->SelectTrack(hits,corr,n2chambers);
-
-            //if(track->Track_IsGood()){
+            if(m_ntuplizer)
+                m_ntuplizer->fillHits(hits,daqEvNum);
+            else{
+                 // track reconstruction
+                Track *track = new Track();
+                bool n2chambers=0;
+                track->SelectTrack(hits,corr,n2chambers);
 
                 if(DUMP_HISTOS)
                     dump->dumpHisto(track,hits,daqEvNum);
@@ -167,20 +168,16 @@ void ReaderROS8::goAnalysis(TString fin, int maxEvent, int runN, int runTrig, bo
                 if(DUMP_STAT)
                     dump->compute_Statistics(track,hits,daqEvNum);
 
-            //}
-
-            // debug hits
-            //hits->dumpHITCollection();
-
-            // fill ttrig calibration histos + occupancy(ALTEA)
-            if(_ttrigCalib && _ttrigCalib->flagFillHistos() && hits) {
-            	_ttrigCalib->fillHistos(hits);
-                _occupancy->fillOccHistos(hits);
+                // fill ttrig calibration histos + occupancy(ALTEA)
+                if(_ttrigCalib && _ttrigCalib->flagFillHistos() && hits) {
+                    _ttrigCalib->fillHistos(hits);
+                    _occupancy->fillOccHistos(hits);
+                }
+                delete track;
             }
 
             // delete collections
             delete hits;
-            delete track;
 
             // increment event number and check integrity
             numEvent ++;

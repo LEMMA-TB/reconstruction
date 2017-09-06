@@ -21,11 +21,12 @@ using std::string;
 
 #include "TFile.h"
 
-#include "Geom.h"
 #include "Save_HistosAndTree.h"
+
+#include "Geom.h"
+#include "DTNtuplizer.h"
 #include "Track_IO.h"
 #include "TTrigCalibration.h"
-// SV 100203-05 include TOMTOOL classes
 #include "RawHistos.h"
 #include "Occupancy.h" //ALTEA
 
@@ -43,6 +44,7 @@ public:
     void readPU(FILE * infile, unsigned int & wordCount, unsigned int &puOffset);
     unsigned int readWord(FILE *infile, unsigned int &wordCount);
 
+    void setNtuplizer(DTNtuplizer * ntuplizer) {m_ntuplizer = ntuplizer; return; };
 
 
     // set and get RawHistos pointer
@@ -59,8 +61,8 @@ public:
  */
 
  // member functions
- void goAnalysis(TString fin, int maxEvent=100, int runN=0, int runTrig=0);
- void goAnalysis(TString fin, int maxEvent=100, int runN=0, int runTrig=0, bool ttrigs=0, bool n2chambers=0, int chside=0);
+ void goUnpack(TString fin, int maxEvent=100, int runN=0, int runTrig=0);
+ void goUnpack(TString fin, int maxEvent=100, int runN=0, int runTrig=0, bool ttrigs=0, bool n2chambers=0, int chside=0);
 
  void fillMap();
  void checkMap();
@@ -85,6 +87,7 @@ private:
  map<int,float>::iterator iter_ttrig;
 
  Geom *geo;
+ DTNtuplizer * m_ntuplizer;
  TimeCorr *corr;
  Save_HistosAndTree *dump;
  Track_IO *inout;

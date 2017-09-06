@@ -13,10 +13,8 @@
 //---- DT classes
 #include "src/RawAnalyzer.h"
 #include "src/ReaderROS8.h"
-#include "src/ReaderROS8_CUT.h"
-#include "../Common/src/EventBuilder.h"
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RECIPE PARAMETERS //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -24,8 +22,6 @@ namespace {
     static struct Parameters : Options {
         std::string inputDTFile;
         std::string rootDTFile;
-        std::string inputSiFile;
-        std::string outputFile;
         int runNum;
         int nEvents;
         int ttrigRunNum;
@@ -47,14 +43,12 @@ namespace {
 
         // GENERAL //
         ("inputDTFile",           &inputDTFile,          std::string("test"),              "DT  chamber raw data file")
-        ("rootDTFile",           &rootDTFile,            std::string("test"),              "DT  chamber reconstructed data file")
-        ("inputSiFile",            &inputSiFile,             std::string("test"),              "Si detectors raw data file")
-        ("outputFile",             &outputFile,              std::string("test"),              "Output file name")
+        ("rootDTFile",             &rootDTFile,            std::string("test"),              "DT  chamber reconstructed data file")
         ("runNum",                 &runNum,                (int)0.,                                  "Run number ID")
         ("nEvents",                 &nEvents,                (int)10.,                                "number of events to read")
         ("ttrigRunNum",         &ttrigRunNum,        (int)0.,                                 "Run number ID to compute time-trig calibration")
         ("n2chambers",         &n2chambers,         (bool)0,                               "Flag for activate 2 chambers analysis")
-        ("execute",                 &execute,                 std::string("pattrec"),         "Execution options: ttrig, pattrec, pattrec2Mu, pattrec-")
+        ("execute",                 &execute,                 std::string("pattrec"),         "Execution options: hitsdump,ttrig, pattrec, pattrec2Mu, pattrec-")
 
         // UNPACK //
         ("unpack.debug",       &unpack.debug,     false,                                     "enable debugging dumps in unpacking code")
@@ -88,12 +82,32 @@ int main(int argc, char **argv) {
 
     //--- Recipe for ROS8 data
 
+    /// hits dump in ntuple
+    if(p.execute=="hitsdump"){
+        std::cout << "\n\n *** RUNNING unpack and hits dump *** \n\n";
+
+        // ntuplizer
+        char fileName[200];
+        sprintf(fileName,"./output/Run_%d_DT_Hits.root",p.runNum,p.nEvents);
+        DTNtuplizer * ntuplizer = new DTNtuplizer(fileName);
+
+        // reader
+        ReaderROS8 *reader=new ReaderROS8();
+        reader->setDebug(p.unpack.debug);
+        reader->setNtuplizer(ntuplizer);
+        reader->goUnpack(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 1, p.n2chambers);
+
+        ntuplizer->write();
+        delete ntuplizer;
+        delete reader;
+    }
+
     /// ttrig computation
     if(p.execute=="ttrig"){
         std::cout << "\n\n *** RUNNING time-trigger computation *** \n\n";
         ReaderROS8 *reader=new ReaderROS8();
         reader->setDebug(p.unpack.debug);
-        reader->goAnalysis(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 1, p.n2chambers);
+        reader->goUnpack(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 1, p.n2chambers);
         delete reader;
     }
 
@@ -102,7 +116,7 @@ int main(int argc, char **argv) {
         std::cout << "\n\n *** RUNNING pattern recognition *** \n\n";
         ReaderROS8 *reader=new ReaderROS8();
         reader->setDebug(p.unpack.debug);
-        reader->goAnalysis(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 0, p.n2chambers,0);
+        reader->goUnpack(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 0, p.n2chambers,0);
         delete reader;
     }
     else if (p.execute=="pattrec2Mu"){
@@ -110,30 +124,18 @@ int main(int argc, char **argv) {
 //         ReaderROS8_CUT *reader_neg=new ReaderROS8_CUT();
         ReaderROS8 *reader_neg=new ReaderROS8();
         reader_neg->setDebug(p.unpack.debug);
-        reader_neg->goAnalysis(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 0, p.n2chambers,-1);
+        reader_neg->goUnpack(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 0, p.n2chambers,-1);
         delete reader_neg;
 
         std::cout << "\n\n *** RUNNING pattern recognition : phi-right side of chamber*** \n\n"; //write rootfile Run_[runNumber]_DT_pos.root ---> mu- line
 //         ReaderROS8_CUT *reader_pos=new ReaderROS8_CUT();
         ReaderROS8 *reader_pos=new ReaderROS8();
         reader_pos->setDebug(p.unpack.debug);
-        reader_pos->goAnalysis(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 0, p.n2chambers,+1);
+        reader_pos->goUnpack(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 0, p.n2chambers,+1);
         delete reader_pos;
     }
 
-    /// event builder
-    else if (p.execute == "eventbuilder"){
-        std::cout << "\n\n *** RUNNING event builder *** \n\n";
-
-        ReaderROS8 *reader=new ReaderROS8();
-        reader->setDebug(p.unpack.debug);
-        EventBuilder *builder = new EventBuilder();
-        builder->openDataFiles(p.rootDTFile,p.inputSiFile,p.outputFile);
-        builder->matchEvents(p.nEvents);
-        builder->dumpOutput();
-
-        delete builder;
-    }
+    /// geo test
     else if (p.execute == "geotest"){
         Geom * geo = new Geom();
 
