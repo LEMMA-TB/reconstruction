@@ -44,9 +44,13 @@ class Save_HistosAndTree {
   void set1chamber(){m_nmaxseg=2; m_nmaxseg_glo=0; return; }
 
   // operations
-  
   void initHB(int runID, int numEvent, ofstream *HBFile);
   void dumpHB(Track *track, HITCollection *hits,int numEvent,ofstream *HBFile);
+
+  void initTree();
+  void bookTree(TTree*, bool n2chambers=1);
+  void cleanTree();
+  void init_Statistics();
   void dumpTree(Track *track, HITCollection *hits,int numEvent,TTree *tree);
   void dumpTree_Track(Track *track, HITCollection *hits,int numEvent,TTree *tree);
   void dumpTree_Hits(HITCollection *hits,int numEvent,TTree *tree);
@@ -55,12 +59,10 @@ class Save_HistosAndTree {
   void writeHistos();
   void resetHistos();
   void deleteHistos();
+
   void fillVar_glo(int npc, int onseg, double m, double erm, double a, double era, double t0, double chi2, double * res, int p);
   void fillVar(int npc, int onseg, double m, double a, double t0, double chi2, double * res, int p, double *xh);
-  void initTree();
-  void bookTree(TTree*, bool n2chambers=1);
-  void cleanTree();
-  void init_Statistics();
+
   void compute_Statistics(Track *track, HITCollection *hits,int numEvent);
   void write_Statistics(FILE *fo_txt);
 

@@ -153,7 +153,7 @@ void ReaderROS8::goUnpack(TString fin, int maxEvent, int runN, int runTrig, bool
             // unpack event
             int daqEvNum = readEvent(rawfile,hits);
 
-            if(m_ntuplizer)
+            if(m_ntuplizer && hits->Get_NumberHITS()>0)
                 m_ntuplizer->fillHits(hits,daqEvNum);
             else{
                  // track reconstruction

@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
 
         // ntuplizer
         char fileName[200];
-        sprintf(fileName,"./output/Run_%d_DT_Hits.root",p.runNum,p.nEvents);
+        sprintf(fileName,"./output/Run_%d_DT.root",p.runNum,p.nEvents);
         DTNtuplizer * ntuplizer = new DTNtuplizer(fileName);
 
         // reader

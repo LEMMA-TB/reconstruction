@@ -7,7 +7,7 @@ DTNtuplizer::DTNtuplizer(char * fileName) : m_tree(0)
     // open file
     cout << "Opening file for output  " << fileName << endl;
     m_file = new TFile(fileName,"RECREATE");
-    m_tree = new TTree("DTHITS","dt hits for LEMMA analysis");
+    m_tree = new TTree("LEMMA-DT","dt hits for LEMMA analysis");
 
     m_geom = new Geom();
 
@@ -29,7 +29,7 @@ void DTNtuplizer::Init()
    // Set branch addresses and branch pointers
    m_tree->SetMakeClass(1);
 
-   m_tree->Branch("EventID",       &EventID,        "EventID/I");
+   m_tree->Branch("EVENT",        &EVENT,      "EVENT/I");
    m_tree->Branch("DT_NHits",    &NHits,         "NHits/I");
    m_tree->Branch("DT_lay",         lay,                 "lay[NHits]/I");
    m_tree->Branch("DT_tube",      tube,               "tube[NHits]/I");
@@ -37,7 +37,31 @@ void DTNtuplizer::Init()
    m_tree->Branch("DT_Xwire",    Xwire,             "Xwire[NHits]/F");
    m_tree->Branch("DT_Zwire",    Zwire,             "Zwire[NHits]/F");
 
-   Notify();
+  m_tree->Branch( "SEG_ns",         &NSeg,  "NSeg/I" );
+  m_tree->Branch( "SEG_X",          segX,     "segX[NSeg]/F" );
+  m_tree->Branch( "SEG_slope",   segS,     "segS[NSeg]/F" );
+  m_tree->Branch( "SEG_chi",        segK,     "segK[NSeg]/F" );
+  m_tree->Branch( "SEG_num",     segN,     "segN[NSeg]/I" );
+  m_tree->Branch( "SEG_t0",         segT0,    "segT0[NSeg]/F" );
+  m_tree->Branch( "SEG_1r",         l1r,   "l1r[NSeg]/F" );
+  m_tree->Branch( "SEG_2r",         l2r,   "l2r[NSeg]/F" );
+  m_tree->Branch( "SEG_3r",         l3r,   "l3r[NSeg]/F" );
+  m_tree->Branch( "SEG_4r",         l4r,   "l4r[NSeg]/F" );
+  m_tree->Branch( "SEG_5r",         l5r,   "l5r[NSeg]/F" );
+  m_tree->Branch( "SEG_6r",         l6r,   "l6r[NSeg]/F" );
+  m_tree->Branch( "SEG_7r",         l7r,   "l7r[NSeg]/F" );
+  m_tree->Branch( "SEG_8r",         l8r,   "l8r[NSeg]/F" );
+
+  m_tree->Branch( "SEG_xh1",    xh1,   "xh1[NSeg]/F" );
+  m_tree->Branch( "SEG_xh2",    xh2,   "xh2[NSeg]/F" );
+  m_tree->Branch( "SEG_xh3",    xh3,   "xh3[NSeg]/F" );
+  m_tree->Branch( "SEG_xh4",    xh4,   "xh4[NSeg]/F" );
+  m_tree->Branch( "SEG_xh5",    xh5,   "xh5[NSeg]/F" );
+  m_tree->Branch( "SEG_xh6",    xh6,   "xh6[NSeg]/F" );
+  m_tree->Branch( "SEG_xh7",    xh7,   "xh7[NSeg]/F" );
+  m_tree->Branch( "SEG_xh8",    xh8,   "xh8[NSeg]/F" );
+
+  Notify();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +86,7 @@ Int_t DTNtuplizer::Cut(Long64_t entry)
 void DTNtuplizer::cleanTree() {
 
   for (int ih = 0; ih < NHits; ih++ ){
-      EventID = -999.;
+      EVENT = -999.;
       lay[ih] = -999;
       tube[ih] = -999;
       dtime[ih] = -999.;
@@ -81,7 +105,7 @@ void DTNtuplizer::fillHits(HITCollection *hits, int numEvent){
 
     cleanTree();
 
-    EventID = numEvent;
+    EVENT = numEvent;
     NHits = hits->Get_NumberHITS();
 
     for(int ih=0; ih<NHits; ih++){
