@@ -11,7 +11,17 @@ using namespace std;
 EventBuilder::EventBuilder()
 {
     m_debug = false;
-    
+
+    detIDs[0] = 10;
+    detIDs[1] = 20;
+    detIDs[2] = 30;
+    detIDs[3] = 40;
+    detIDs[4] = 51;
+    detIDs[5] = 50;
+    detIDs[6] = 56;
+    detIDs[7] = 55;
+    detIDs[8] = 70;     
+
     Int_t iLay=0;
     map_detID[10]=iLay++;
     map_detID[20]=iLay++;

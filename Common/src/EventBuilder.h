@@ -164,7 +164,7 @@ private:
     
     // --- Detector ID variables
     map<Int_t,Int_t> map_detID;
-    const Int_t detIDs[nSiLayers+1]={10,20,30,40,51,50,56,55,70};
+    Int_t detIDs[nSiLayers+1];
 
     ifstream myfile;
     bool m_debug;
