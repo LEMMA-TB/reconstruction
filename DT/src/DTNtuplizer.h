@@ -32,7 +32,7 @@ public:
 
     // Declaration of leaf types
     Int_t         EVENT;
-    static const Int_t kMaxHits = 500;
+    static const Int_t kMaxHits = 5000;
     Int_t        NHits;
     Int_t        lay[kMaxHits];
     Int_t        tube[kMaxHits];

@@ -34,6 +34,9 @@ ReaderROS8::ReaderROS8() {
   //ALTEA
   _occupancy = NULL;
 
+  // SV new ntuplizer
+  m_ntuplizer = NULL;
+
   return;
 }
 

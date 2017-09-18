@@ -75,6 +75,8 @@ float Geom::get_x_wire(int CH, int SL, int L, int W)
       _x=-(W-1)*4.2+_x0_phi_lay2;
   }
 
+
+  //std::cout << "X wire for ch " << CH << ", SL " << SL << ", LAY " << L << ", wire " << W << " = " << _x << std::endl;
   return _x;
 }
   
