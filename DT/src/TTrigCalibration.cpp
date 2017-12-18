@@ -117,8 +117,8 @@ void TTrigCalibration::initVariables(){
   hSLEdgeH = 4500;
 
   //cut on raw time
-  rtime_min=0;
-  rtime_max=4500;
+  rtime_min=3000;
+  rtime_max=4000;
 
   if(DEBUG_TTRIG)
     cout << "TTrigCalibration::initVariables DONE" << endl; 
@@ -394,6 +394,8 @@ void TTrigCalibration::saveTTrigFile(int runN){
 
 void TTrigCalibration::dumpTTrigs(char * calibFileName){
   
+  cout << "-----------  TTrigCalibration::dumpTTrigs   ----------" << endl;
+
   for(int i=0;i<6;i++)
     cout<<" ROB n."<<N_ROB[i]<<"  TTRIG (ns) = "<<TTrig_ROB_mean[i]<<"  RMS (ns) = "<<TTrig_ROB_RMS[i]<<endl;
   //int CH[8]={8,9,10,10,10,11,11,11};

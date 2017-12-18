@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
         ReaderROS8 *reader=new ReaderROS8();
         reader->setDebug(p.unpack.debug);
         reader->setNtuplizer(ntuplizer);
-        reader->goUnpack(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 1, p.n2chambers);
+        reader->goUnpack(p.inputDTFile, p.nEvents, p.runNum, p.ttrigRunNum, 0, p.n2chambers);
 
         ntuplizer->write();
         delete ntuplizer;
